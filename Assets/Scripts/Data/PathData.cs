@@ -1,16 +1,9 @@
-using UnityEngine;
+// PathData must be a struct and all fields must be value types
+using Unity.Mathematics;
+using Unity.Entities;
 
-public class PathData : MonoBehaviour
+[InternalBufferCapacity(8)]
+public struct PathData : IBufferElementData
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public float3 Waypoint;
 }
