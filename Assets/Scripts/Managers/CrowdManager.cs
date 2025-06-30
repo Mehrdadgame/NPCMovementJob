@@ -2,7 +2,9 @@ using UnityEngine;
 using Unity.Entities;
 using CrowdSimulation.Data;
 using CrowdSimulation.Components;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace CrowdSimulation.Managers
 {
