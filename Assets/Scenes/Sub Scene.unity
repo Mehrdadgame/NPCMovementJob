@@ -678,7 +678,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: ConnectedWaypoints.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
@@ -694,7 +694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -731,6 +731,10 @@ PrefabInstance:
     - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_Name
       value: WayPoint (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -771,7 +775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: ConnectedWaypoints.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
@@ -787,7 +791,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -825,6 +829,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WayPoint (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -860,12 +868,12 @@ PrefabInstance:
       objectReference: {fileID: 654480277}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: ConnectedWaypoints.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
       value: 
-      objectReference: {fileID: 654480277}
+      objectReference: {fileID: 1331674704}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[1]'
       value: 
@@ -876,7 +884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1032,7 +1040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AgentPrefab: {fileID: 4984866407952337440, guid: 1625947a877667f46b7b2d9d5f9e8b4c, type: 3}
-  SpawnCount: 250
+  SpawnCount: 100
   SpawnRadius: 10
   DefaultMaxSpeed: 3
   DefaultAcceleration: 5
@@ -1492,20 +1500,24 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: ConnectedWaypoints.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 669451816}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.2
+      value: -25.1
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -29.1
+      value: -54.8
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1538,6 +1550,10 @@ PrefabInstance:
     - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_Name
       value: WayPoint (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1763,7 +1779,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: ConnectedWaypoints.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
@@ -1779,7 +1795,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1816,6 +1832,10 @@ PrefabInstance:
     - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_Name
       value: WayPoint (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1923,7 +1943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: ConnectedWaypoints.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3308262787952756599, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: 'ConnectedWaypoints.Array.data[0]'
@@ -1939,11 +1959,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 66.4
+      value: 67.4
       objectReference: {fileID: 0}
     - target: {fileID: 6699986189035069524, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1976,6 +1996,10 @@ PrefabInstance:
     - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
       propertyPath: m_Name
       value: WayPoint (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6874025999595581066, guid: 7134862f6458ec64c82bd6fbce72e65c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

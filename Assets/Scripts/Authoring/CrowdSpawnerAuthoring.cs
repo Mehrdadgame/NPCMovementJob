@@ -1,3 +1,4 @@
+using CrowdSimulation;
 using Unity.Entities;
 using UnityEngine;
 
@@ -46,7 +47,11 @@ public class CrowdSpawnerAuthoring : MonoBehaviour
     private Entity GetEntity()
     {
         var world = World.DefaultGameObjectInjectionWorld;
-        return world.EntityManager.CreateEntityQuery(typeof(CrowdSpawnerAuthoring)).GetSingletonEntity();
+        var entityManager = world.EntityManager;
+        var query = entityManager.CreateEntityQuery(typeof(CrowdSpawnerAuthoring));
+        if (query.CalculateEntityCount() > 0)
+            return query.GetSingletonEntity();
+        return Entity.Null;
     }
 }
 

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 504470df7c8851740ad6f4ff37e31e1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Radius: 1
+  Radius: 2
   Height: 1.5
   IsStatic: 0
 --- !u!136 &3798244721096284717
