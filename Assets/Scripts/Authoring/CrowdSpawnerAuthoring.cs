@@ -1,72 +1,70 @@
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
-using CrowdSimulation.Data;
 
-namespace CrowdSimulation.Authoring
+public class CrowdSpawnerAuthoring : MonoBehaviour
 {
-    public struct CrowdSpawner : IComponentData
+    [Header("Spawn Settings")]
+    public GameObject AgentPrefab;
+    public int SpawnCount = 50;
+    public float SpawnRadius = 10.0f;
+
+    [Header("Default Agent Settings")]
+    public float DefaultMaxSpeed = 3.0f;
+    public float DefaultAcceleration = 5.0f;
+    public float DefaultAvoidanceRadius = 2.0f;
+
+    [Header("Control")]
+    public bool AutoSpawnOnStart = true;
+
+    private void Start()
     {
-        public Entity NPCPrefab;
-        public int MaxCount;
-        public float SpawnRadius;
-        public float SpawnInterval;
-        public float NextSpawnTime;
-        public int CurrentCount;
-    }
-
-    public struct SpawnPoint : IBufferElementData
-    {
-        public float3 Position;
-        public quaternion Rotation;
-    }
-
-    public class CrowdSpawnerAuthoring : MonoBehaviour
-    {
-        [Header("Spawn Settings")]
-        public GameObject npcPrefab;
-        public int maxNPCs = 100;
-        public float spawnRadius = 5f;
-        public float spawnInterval = 0.1f;
-
-        [Header("Spawn Points")]
-        public Transform[] spawnPoints;
-
-        [Header("Configuration")]
-        public CrowdConfig crowdConfig;
-
-        class CrowdSpawnerBaker : Baker<CrowdSpawnerAuthoring>
+        if (AutoSpawnOnStart)
         {
-            public override void Bake(CrowdSpawnerAuthoring authoring)
-            {
-                var entity = GetEntity(TransformUsageFlags.None);
-
-                AddComponent(entity, new CrowdSpawner
-                {
-                    NPCPrefab = GetEntity(authoring.npcPrefab, TransformUsageFlags.Dynamic),
-                    MaxCount = authoring.maxNPCs,
-                    SpawnRadius = authoring.spawnRadius,
-                    SpawnInterval = authoring.spawnInterval,
-                    NextSpawnTime = 0f,
-                    CurrentCount = 0
-                });
-
-                if (authoring.spawnPoints != null && authoring.spawnPoints.Length > 0)
-                {
-                    var spawnBuffer = AddBuffer<SpawnPoint>(entity);
-                    foreach (var point in authoring.spawnPoints)
-                    {
-                        if (point != null)
-                        {
-                            spawnBuffer.Add(new SpawnPoint
-                            {
-                                Position = point.position,
-                                Rotation = point.rotation
-                            });
-                        }
-                    }
-                }
-            }
+            SpawnCrowd();
         }
+    }
+
+    [ContextMenu("Spawn Crowd")]
+    public void SpawnCrowd()
+    {
+        var world = World.DefaultGameObjectInjectionWorld;
+        var entityManager = world.EntityManager;
+
+        var spawnerEntity = entityManager.CreateEntity();
+        entityManager.AddComponentData(spawnerEntity, new CrowdSpawnerComponent
+        {
+            AgentPrefab = entityManager.GetBuffer<LinkedEntityGroup>(GetEntity())[1].Value,
+            SpawnCount = SpawnCount,
+            SpawnRadius = SpawnRadius,
+            ShouldSpawn = true,
+            DefaultMaxSpeed = DefaultMaxSpeed,
+            DefaultAcceleration = DefaultAcceleration,
+            DefaultAvoidanceRadius = DefaultAvoidanceRadius
+        });
+    }
+
+    private Entity GetEntity()
+    {
+        var world = World.DefaultGameObjectInjectionWorld;
+        return world.EntityManager.CreateEntityQuery(typeof(CrowdSpawnerAuthoring)).GetSingletonEntity();
+    }
+}
+
+public class CrowdSpawnerBaker : Baker<CrowdSpawnerAuthoring>
+{
+    public override void Bake(CrowdSpawnerAuthoring authoring)
+    {
+        var entity = GetEntity(TransformUsageFlags.Dynamic);
+
+        AddComponent(entity, new CrowdSpawnerComponent
+        {
+            AgentPrefab = GetEntity(authoring.AgentPrefab, TransformUsageFlags.Dynamic),
+            SpawnCount = authoring.SpawnCount,
+            SpawnRadius = authoring.SpawnRadius,
+            ShouldSpawn = authoring.AutoSpawnOnStart,
+            DefaultMaxSpeed = authoring.DefaultMaxSpeed,
+            DefaultAcceleration = authoring.DefaultAcceleration,
+            DefaultAvoidanceRadius = authoring.DefaultAvoidanceRadius
+        });
     }
 }

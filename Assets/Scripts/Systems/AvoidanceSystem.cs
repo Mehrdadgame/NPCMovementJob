@@ -1,168 +1,87 @@
-using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using CrowdSimulation.Components;
-using CrowdSimulation.Data;
 using Unity.Jobs;
+using Unity.Burst;
+using Unity.Collections;
 
-namespace CrowdSimulation.Systems
+[UpdateInGroup(typeof(SimulationSystemGroup))]
+[UpdateBefore(typeof(MovementSystem))]
+[UpdateAfter(typeof(PathFollowingSystem))]
+public partial class AvoidanceSystem : SystemBase
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateAfter(typeof(PathFollowingSystem))]
-    [UpdateBefore(typeof(MovementSystem))]
-    public partial struct AvoidanceSystem : ISystem
+    private EntityQuery m_AgentQuery;
+
+    protected override void OnCreate()
     {
-        private SpatialGrid spatialGrid;
-
-        [BurstCompile]
-        public void OnCreate(ref SystemState state)
-        {
-            state.RequireForUpdate<CrowdAgent>();
-
-            // Initialize spatial grid
-            spatialGrid = new SpatialGrid(
-                4f, // Cell size
-                32, // Width
-                32, // Height
-                new float3(-64, 0, -64), // World min
-                new float3(64, 0, 64),   // World max
-                Allocator.Persistent
-            );
-        }
-
-        [BurstCompile]
-        public void OnDestroy(ref SystemState state)
-        {
-            spatialGrid.Dispose();
-        }
-
-        [BurstCompile]
-        public void OnUpdate(ref SystemState state)
-        {
-            // Clear spatial grid
-            var clearGridJob = new ClearSpatialGridJob
-            {
-                SpatialGrid = spatialGrid
-            };
-            var clearHandle = clearGridJob.Schedule();
-
-            // Populate spatial grid
-            var populateGridJob = new PopulateSpatialGridJob
-            {
-                SpatialGrid = spatialGrid
-            };
-            var populateHandle = populateGridJob.ScheduleParallel(clearHandle);
-
-            // Calculate avoidance forces
-            var avoidanceJob = new AvoidanceJob
-            {
-                SpatialGrid = spatialGrid,
-                DeltaTime = SystemAPI.Time.DeltaTime
-            };
-            avoidanceJob.ScheduleParallel(populateHandle);
-        }
+        m_AgentQuery = GetEntityQuery(ComponentType.ReadOnly<LocalTransform>(),
+                                     ComponentType.ReadOnly<CrowdAgentComponent>());
     }
 
-    [BurstCompile]
-    public partial struct ClearSpatialGridJob : IJob
+    protected override void OnUpdate()
     {
-        public SpatialGrid SpatialGrid;
+        var agentCount = m_AgentQuery.CalculateEntityCount();
+        if (agentCount == 0) return;
 
-        public void Execute()
+        var positions = m_AgentQuery.ToComponentDataArray<LocalTransform>(Allocator.TempJob);
+        var agents = m_AgentQuery.ToComponentDataArray<CrowdAgentComponent>(Allocator.TempJob);
+
+        var avoidanceJob = new AvoidanceJob
         {
-            for (int i = 0; i < SpatialGrid.Cells.Length; i++)
-            {
-                var cell = SpatialGrid.Cells[i];
-                cell.EntityIndices.Clear();
-                cell.Count = 0;
-                SpatialGrid.Cells[i] = cell;
-            }
-        }
+            AllPositions = positions,
+            AllAgents = agents,
+            DeltaTime = SystemAPI.Time.DeltaTime
+        };
+
+        Dependency = avoidanceJob.ScheduleParallel(Dependency);
+
+        positions.Dispose(Dependency);
+        agents.Dispose(Dependency);
     }
+}
 
-    [BurstCompile]
-    public partial struct PopulateSpatialGridJob : IJobEntity
+[BurstCompile]
+public partial struct AvoidanceJob : IJobEntity
+{
+    [ReadOnly] public NativeArray<LocalTransform> AllPositions;
+    [ReadOnly] public NativeArray<CrowdAgentComponent> AllAgents;
+    public float DeltaTime;
+
+    public void Execute(
+        [EntityIndexInQuery] int entityIndex,
+        ref MovementComponent movement,
+        ref AvoidanceComponent avoidance,
+        in LocalTransform transform,
+        in CrowdAgentComponent agent)
     {
-        public SpatialGrid SpatialGrid;
+        float3 separationForce = float3.zero;
+        int neighborCount = 0;
 
-        public void Execute([EntityIndexInQuery] int entityIndex, in LocalTransform transform)
+        for (int i = 0; i < AllPositions.Length; i++)
         {
-            var cellIndex = SpatialGrid.GetCellIndex(transform.Position);
-            var cell = SpatialGrid.Cells[cellIndex];
-            cell.EntityIndices.Add(entityIndex);
-            cell.Count++;
-            SpatialGrid.Cells[cellIndex] = cell;
+            if (i == entityIndex) continue;
+
+            var otherPosition = AllPositions[i].Position;
+            var direction = transform.Position - otherPosition;
+            var distance = math.length(direction);
+
+            if (distance < agent.AvoidanceRadius && distance > 0.1f)
+            {
+                var normalizedDirection = math.normalize(direction);
+                var force = normalizedDirection / distance; // Closer agents have stronger repulsion
+                separationForce += force;
+                neighborCount++;
+            }
         }
-    }
 
-    [BurstCompile]
-    public partial struct AvoidanceJob : IJobEntity
-    {
-        [ReadOnly] public SpatialGrid SpatialGrid;
-        [ReadOnly] public float DeltaTime;
-
-        public void Execute([EntityIndexInQuery] int entityIndex,
-                           ref SteeringForce steeringForce,
-                           in LocalTransform transform,
-                           in CrowdAgent agent,
-                           in AvoidanceData avoidanceData,
-                           in Velocity velocity)
+        if (neighborCount > 0)
         {
-            var position = transform.Position;
-            var cellIndex = SpatialGrid.GetCellIndex(position);
-
-            float3 separation = float3.zero;
-            float3 alignment = float3.zero;
-            float3 cohesion = float3.zero;
-            int neighborCount = 0;
-
-            // Check current cell and neighboring cells
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dz = -1; dz <= 1; dz++)
-                {
-                    var checkX = (cellIndex % SpatialGrid.GridWidth) + dx;
-                    var checkZ = (cellIndex / SpatialGrid.GridWidth) + dz;
-
-                    if (checkX < 0 || checkX >= SpatialGrid.GridWidth ||
-                        checkZ < 0 || checkZ >= SpatialGrid.GridHeight)
-                        continue;
-
-                    var checkCellIndex = checkZ * SpatialGrid.GridWidth + checkX;
-                    var cell = SpatialGrid.Cells[checkCellIndex];
-
-                    for (int i = 0; i < cell.Count; i++)
-                    {
-                        var otherIndex = cell.EntityIndices[i];
-                        if (otherIndex == entityIndex) continue;
-
-                        // This is simplified - in real implementation you'd need to access other entities' data
-                        // For now, we'll use basic separation logic
-                        var distance = math.distance(position, position); // Placeholder
-
-                        if (distance < avoidanceData.AvoidanceRadius && distance > 0.1f)
-                        {
-                            var diff = position - position; // Placeholder
-                            diff = math.normalize(diff) / distance; // Weight by distance
-                            separation += diff;
-                            neighborCount++;
-                        }
-                    }
-                }
-            }
-
-            // Apply avoidance forces
-            if (neighborCount > 0)
-            {
-                separation = math.normalize(separation) * agent.MaxSpeed - velocity.Value;
-                separation = math.normalize(separation) * math.min(math.length(separation), agent.MaxForce);
-            }
-
-            steeringForce.Separation = separation * avoidanceData.SeparationWeight;
-            steeringForce.Alignment = alignment * avoidanceData.AlignmentWeight;
-            steeringForce.Cohesion = cohesion * avoidanceData.CohesionWeight;
+            separationForce = math.normalize(separationForce) * agent.MaxSpeed;
+            var steeringForce = (separationForce - movement.Velocity) * agent.SeparationWeight;
+            movement.SteeringForce += steeringForce;
         }
+
+        avoidance.NeighborCount = neighborCount;
+        avoidance.AvoidanceDirection = separationForce;
     }
 }
