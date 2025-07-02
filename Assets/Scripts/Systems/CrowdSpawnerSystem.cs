@@ -7,6 +7,8 @@ using UnityEngine;
 namespace CrowdSimulation
 {
     [UpdateInGroup(typeof(InitializationSystemGroup))]
+    /* The `CrowdSpawnerSystem` class is responsible for spawning crowd agents at specified positions
+    with randomized attributes. */
     public partial class CrowdSpawnerSystem : SystemBase
     {
         private EntityCommandBufferSystem m_ECBSystem;

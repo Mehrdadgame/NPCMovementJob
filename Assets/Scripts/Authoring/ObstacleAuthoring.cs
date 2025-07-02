@@ -1,6 +1,8 @@
 using Unity.Entities;
 using UnityEngine;
 
+/* The ObstacleAuthoring class defines properties for an obstacle in Unity and visualizes it in the
+scene view using Gizmos. */
 public class ObstacleAuthoring : MonoBehaviour
 {
     [Header("Obstacle Settings")]
@@ -20,6 +22,8 @@ public class ObstacleAuthoring : MonoBehaviour
     }
 }
 
+/* The ObstacleBaker class extends the Baker class and implements the Bake method to create obstacle
+entities based on ObstacleAuthoring data. */
 public class ObstacleBaker : Baker<ObstacleAuthoring>
 {
     public override void Bake(ObstacleAuthoring authoring)

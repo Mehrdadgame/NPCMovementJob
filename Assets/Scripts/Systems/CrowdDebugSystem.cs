@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace CrowdSimulation
 {
+    /* The CrowdDebugSystem class in C# provides debug visualization for crowd agents, paths, and obstacles
+    in a game or simulation environment. */
     [UpdateInGroup(typeof(PresentationSystemGroup))]
     public partial class CrowdDebugSystem : SystemBase
     {
@@ -92,6 +94,8 @@ namespace CrowdSimulation
         }
     }
 
+    /* The DebugExtensions class in C# provides a method to draw a wire sphere using Debug.DrawLine for
+    visualization purposes. */
     public static class DebugExtensions
     {
         public static void DrawWireSphere(Vector3 center, float radius, Color color, float duration)

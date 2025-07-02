@@ -20,6 +20,8 @@ public class CrowdAgentAuthoring : MonoBehaviour
     public bool IsLooping = true;
 }
 
+/* The CrowdAgentBaker class is responsible for baking CrowdAgentAuthoring data into entity components
+for crowd simulation. */
 public class CrowdAgentBaker : Baker<CrowdAgentAuthoring>
 {
     public override void Bake(CrowdAgentAuthoring authoring)

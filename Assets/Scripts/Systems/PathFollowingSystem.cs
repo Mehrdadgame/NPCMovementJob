@@ -5,6 +5,8 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Collections;
 
+/* This C# class called PathFollowingSystem extends SystemBase and is responsible for updating path
+following logic before the MovementSystem in a SimulationSystemGroup. */
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateBefore(typeof(MovementSystem))]
 public partial class PathFollowingSystem : SystemBase
@@ -22,6 +24,9 @@ public partial class PathFollowingSystem : SystemBase
     }
 }
 
+/* The `[BurstCompile]` attribute in C# is used to instruct the Burst compiler to optimize the
+specified method for performance. In this case, the `PathFollowingJob` struct implements the
+`IJobEntity` interface, which is used in Unity's Job System for parallel processing of entities. */
 [BurstCompile]
 public partial struct PathFollowingJob : IJobEntity
 {

@@ -4,7 +4,9 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Burst;
 
-[UpdateInGroup(typeof(SimulationSystemGroup))]
+[/* The MovementSystem class in C# schedules a MovementJob to update movement based on delta time in a
+SimulationSystemGroup after the AvoidanceSystem. */
+UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(AvoidanceSystem))]
 public partial class MovementSystem : SystemBase
 {
@@ -21,6 +23,11 @@ public partial class MovementSystem : SystemBase
     }
 }
 
+/* The `[BurstCompile]` attribute in C# is used to instruct the Burst compiler to optimize the
+specified method for performance. In this case, the `MovementJob` struct implements the `IJobEntity`
+interface, which is used in Unity's Job System for parallel processing of entities. The `Execute`
+method within the struct defines the logic for updating the movement of entities based on various
+parameters such as steering force, velocity, position, and rotation. */
 [BurstCompile]
 public partial struct MovementJob : IJobEntity
 {

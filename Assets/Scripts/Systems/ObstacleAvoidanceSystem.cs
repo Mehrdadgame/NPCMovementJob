@@ -5,6 +5,8 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Collections;
 
+/* The ObstacleAvoidanceSystem class in C# is responsible for avoiding obstacles in a simulation,
+updating before the MovementSystem and after the AvoidanceSystem. */
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateBefore(typeof(MovementSystem))]
 [UpdateAfter(typeof(AvoidanceSystem))]
@@ -40,6 +42,10 @@ public partial class ObstacleAvoidanceSystem : SystemBase
     }
 }
 
+/* The `[BurstCompile]` attribute in C# is used to instruct the Burst compiler to optimize the
+specified method or struct for performance. In this case, the `ObstacleAvoidanceJob` struct is
+marked with `[BurstCompile]`, indicating that the Burst compiler should optimize the `Execute`
+method within this struct for better performance when running on supported platforms. */
 [BurstCompile]
 public partial struct ObstacleAvoidanceJob : IJobEntity
 {

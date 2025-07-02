@@ -25,6 +25,10 @@ public class CrowdSpawnerAuthoring : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The function "SpawnCrowd" creates a spawner entity with specified components for spawning a crowd
+    /// in a game.
+    /// </summary>
     [ContextMenu("Spawn Crowd")]
     public void SpawnCrowd()
     {
@@ -44,6 +48,15 @@ public class CrowdSpawnerAuthoring : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// The GetEntity function retrieves a specific entity from the EntityManager based on a query for a
+    /// specific component type.
+    /// </summary>
+    /// <returns>
+    /// The `GetEntity` method returns an Entity object. If there is at least one entity that matches the
+    /// query for `CrowdSpawnerAuthoring` component, the method returns that entity. Otherwise, it returns
+    /// `Entity.Null`.
+    /// </returns>
     private Entity GetEntity()
     {
         var world = World.DefaultGameObjectInjectionWorld;
@@ -55,6 +68,8 @@ public class CrowdSpawnerAuthoring : MonoBehaviour
     }
 }
 
+/* The CrowdSpawnerBaker class extends the Baker class and implements the Bake method to create a
+CrowdSpawnerComponent entity based on the CrowdSpawnerAuthoring data. */
 public class CrowdSpawnerBaker : Baker<CrowdSpawnerAuthoring>
 {
     public override void Bake(CrowdSpawnerAuthoring authoring)
